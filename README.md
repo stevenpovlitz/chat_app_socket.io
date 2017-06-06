@@ -1,3 +1,3 @@
-# based around this guide:
+# Based around this guide:
 
 https://socket.io/get-started/chat/
