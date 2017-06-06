@@ -9,22 +9,24 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
   socket.on('username set', function(name){
-    socket.nickname = validator.blacklist(name);
+    socket.nickname = name; // don't need to clean, because we only clean when SENDING to client
     io.emit('connect message', socket.nickname + " has connected");
   });
 
   socket.on('chat message', function(msg){
-    msg = validator.blacklist(socket.nickname + ': ' + msg);
+    msg = validator.escape(socket.nickname + ': ' + msg);
     console.log(msg);
     io.emit('chat message', msg);
   });
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected: ');
+  console.log('a user connected');
   socket.on('disconnect', function(){
-    console.log('user disconnected: ' + socket.nickname);
-    io.emit('disconnect message', socket.nickname + " has disconnected");
+    var clean_nickname = validator.escape(socket.nickname);
+
+    console.log('user disconnected: ' + clean_nickname);
+    io.emit('disconnect message', clean_nickname + " has disconnected");
   });
 });
 
