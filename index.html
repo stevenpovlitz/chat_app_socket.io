@@ -21,6 +21,7 @@
       var socket = io();
 
       var nickname = prompt("What is your nickname?");
+      socket.emit('username set', nickname);
 
       $('form').submit(function(){
         socket.emit('chat message', $('#m').val());
@@ -33,6 +34,9 @@
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
       });
+      socket.on('disconnect message', function(msg) {
+        $('#messages').append($('<li><b>').text(msg).css("background-color", "#ffb3b3"));
+      })
     });
   </script>
 

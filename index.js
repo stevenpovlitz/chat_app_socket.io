@@ -8,18 +8,23 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  io.emit('connect message', "A user has connected");
+  socket.on('username set', function(name){
+    socket.nickname = validator.blacklist(name);
+    io.emit('connect message', socket.nickname + " has connected");
+  });
+
   socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
-    msg = validator.blacklist(msg);
+    msg = validator.blacklist(socket.nickname + ': ' + msg);
+    console.log(msg);
     io.emit('chat message', msg);
   });
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+  console.log('a user connected: ');
   socket.on('disconnect', function(){
-    console.log('user disconnected');
+    console.log('user disconnected: ' + socket.nickname);
+    io.emit('disconnect message', socket.nickname + " has disconnected");
   });
 });
 
