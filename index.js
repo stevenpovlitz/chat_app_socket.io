@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var validator = require('validator');
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -10,6 +11,7 @@ io.on('connection', function(socket){
   io.emit('connect message', "A user has connected");
   socket.on('chat message', function(msg){
     console.log('message: ' + msg);
+    msg = validator.blacklist(msg);
     io.emit('chat message', msg);
   });
 });
